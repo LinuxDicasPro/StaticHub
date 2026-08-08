@@ -1,0 +1,44 @@
+#!/bin/sh
+
+PKG_NAME="aria2"
+PKG_VERSION="1.37.0"
+LINK="https://github.com/aria2/aria2/releases/download/release-$PKG_VERSION/aria2-$PKG_VERSION.tar.xz"
+BINARY="$PKG_NAME"
+OUTPUT_DIR="$PWD/../_output"
+CWD="$(pwd)"
+
+TMPDIR="$(mktemp -d)"
+cd "$TMPDIR" || exit 1
+
+[ "$1" != "" ] && PKG_VERSION="$1"
+
+set -e
+
+apk add ca-certificates expat-dev sqlite-dev c-ares-dev expat-static sqlite-static openssl-libs-static openssl-dev zlib-dev zlib-static
+
+wget -O ${PKG_NAME}-${PKG_VERSION}.tar.xz -c $LINK
+tar xvf ${PKG_NAME}-${PKG_VERSION}.tar.xz
+
+cd ${PKG_NAME}*${PKG_VERSION}*/
+
+./configure ARIA2_STATIC=yes CFLAGS="-static -Os" LDFLAGS="-static" \
+    --disable-nls \
+    --with-openssl \
+    --with-expat \
+    --without-libxml2 \
+    --without-gnutls \
+    --without-libnettle \
+    --without-libgcrypt \
+    --without-libgmp \
+    --with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
+make -j"$(expr "$(nproc)" + 1)"
+
+BIN="aria2c"
+strip src/$BIN
+mkdir -p "$OUTPUT_DIR"
+mv -v src/$BIN "$OUTPUT_DIR/$BIN"
+
+cd "$CWD"
+rm -rf "$TMPDIR"
+
+echo "Binário salvo em $OUTPUT_DIR/$BIN"

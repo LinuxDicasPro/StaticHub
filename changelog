@@ -1,4 +1,21 @@
 ----------------------------
+Sat Aug 08 17:37:43 -03 2026
+----------------------------
+------
+Added:
+------
+aria2c: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=2c0e143877520d3b7d1d76c9fd0e7f8c6e17caf0, stripped
+--------
+Changed:
+--------
+axel:              ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=3c2b0f85cfbdc92cb996ea7c513181e07631846f, stripped
+bwrap:             ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=3d9026d054fe0d472d32c2ad1492c26627f80957, stripped
+cmatrix:           ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=8d1e2ba7548eade07ce2f49833dcfead88a2adff, stripped
+proot:             ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=50c697b49c0ab35ee55bdcde9ba97644da962ef9, stripped
+shc:               ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=0d0bca4dc241c7a0302245611106aecfda45af51, stripped
+sl:                ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=81b932bd53e6864df59106c7dbad7c297bbff7b7, stripped
+upx:               ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), static-pie linked, BuildID[sha1]=fb654399a48c0a529d8a6e7319f66d5d53e58dbf, stripped
+----------------------------
 Sat Jan 31 08:45:05 -03 2026
 ----------------------------
 ------
@@ -39,7 +56,7 @@ Added:
 ------
 ddrescue: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=575b6d13c0301c6d7c5b02ff60853d735bf0dd7f, stripped
 ----------------------------
-Tue Jul  8 21:12:52 -03 2025
+Tue Jul 08 21:12:52 -03 2025
 ----------------------------
 ------
 Added:
@@ -54,7 +71,7 @@ patchelf: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked
 rebind:   ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=aa6af796ba1286fa08007d61176fb4d9b70e6e7b, stripped
 sstrip:   ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=dbf801958203194fdb5d61d858f0de3267c7ccca, stripped
 ----------------------------
-Sun Jul  6 11:59:17 -03 2025
+Sun Jul 06 11:59:17 -03 2025
 ----------------------------
 ------
 Added:
@@ -65,7 +82,7 @@ lynx:    ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
 sl:      ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=54e19a6f1b480e96b345534170cd365d6138ec6c, stripped
 upx:     ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=efd2e1440316c61abcec3aa12fca751890e2d9a5, stripped
 ----------------------------
-Sat Jul  5 20:44:06 -03 2025
+Sat Jul 05 20:44:06 -03 2025
 ----------------------------
 ------
 Added:

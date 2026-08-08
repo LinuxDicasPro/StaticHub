@@ -18,6 +18,8 @@ cd ${PKG_NAME}-${PKG_VERSION}/
 
 apk add bsd-compat-headers libarchive-dev linux-headers py3-docutils talloc-dev talloc-static uthash-dev
 
+sed -i '1i #include <libgen.h>' src/cli/cli.c
+
 make -C src proot -j"$(expr "$(nproc)" + 1)" LDFLAGS="$LDFLAGS -static -ltalloc"
 
 strip src/proot

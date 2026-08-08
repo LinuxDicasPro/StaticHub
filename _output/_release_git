@@ -6,10 +6,9 @@ set -e
 #  Autor: LinuxDicasPro
 # ======================================================
 
-REPO="LinuxDicasPro/StaticHub"
+REPO="LinuxProativo/StaticHub"
 CATEGORY_DIR="category"
 README="../README.md"
-DATE=$(date +"%Y-%m-%d")
 
 # ======================================================
 # Funções auxiliares
@@ -33,10 +32,38 @@ get_remote_hash() {
     curl -fsSL "$url" 2>/dev/null | awk '{print $1}' || echo ""
 }
 
+get_file_birth_date() {
+    local file="$1"
+    local dt
+
+    # Extrai a data do campo Birth usando locale neutro
+    dt=$(unset LC_ALL LANG; stat "$file" 2>/dev/null | grep -i "Birth:" | awk '{print $2}')
+
+    # Fallback para mtime se o sistema de arquivos não registrar Birth time
+    if [[ -z "$dt" || "$dt" == "-" ]]; then
+        dt=$(unset LC_ALL LANG; date -r "$file" +"%Y-%m-%d" 2>/dev/null)
+    fi
+
+    echo "$dt"
+}
+
+get_max_birth_date() {
+    local max_dt=""
+    for f in "$@"; do
+        local d=$(get_file_birth_date "$f")
+        if [[ -z "$max_dt" || "$d" > "$max_dt" ]]; then
+            max_dt="$d"
+        fi
+    done
+    echo "$max_dt"
+}
+
 create_or_update_release() {
     local release_name="$1"
     shift
     local files=("$@")
+
+    local rel_date=$(get_max_birth_date "${files[@]}")
 
     echo -e "\n📦 Processando release: $release_name"
 
@@ -70,7 +97,7 @@ create_or_update_release() {
             gh release create "$release_name" "${files[@]}" "${files[@]/%/.sha256}" \
                 -R "$REPO" \
                 --title "$release_name" \
-                --notes "Atualizado em $DATE — Binários estáticos Linux x86_64" \
+                --notes "Atualizado em $rel_date — Binários estáticos Linux x86_64" \
                 --latest=false
         else
             echo "✅ Nenhuma atualização necessária para '$release_name'."
@@ -80,7 +107,7 @@ create_or_update_release() {
         gh release create "$release_name" "${files[@]}" "${files[@]/%/.sha256}" \
             -R "$REPO" \
             --title "$release_name" \
-            --notes "Binários estáticos Linux x86_64 — Criado em $DATE" \
+            --notes "Binários estáticos Linux x86_64 — Criado em $rel_date" \
             --latest=false
     fi
 }
@@ -90,6 +117,8 @@ add_to_readme() {
     shift
     local files=("$@")
 
+    local rel_date=$(get_max_birth_date "${files[@]}")
+
     local links=()
     for f in "${files[@]}"; do
         local base=$(basename "$f")
@@ -97,11 +126,11 @@ add_to_readme() {
     done
     local joined="${links[*]}"
 
-    echo "| ${name} | ${DATE} | ${joined} |" >> "$README"
+    echo "| ${name} | ${rel_date} | ${joined} |" >> "$README"
 }
 
 # ======================================================
-# Gerar novo README
+# Gerar novo README com a estrutura atualizada
 # ======================================================
 echo '<p align="center">
   <img src="logo.png" alt="StaticHub" width="320"/>
@@ -109,9 +138,17 @@ echo '<p align="center">
 
 <h1 align="center"><strong>StaticHub - Static Binary Repository</strong></h1>
 
-### **This repository contains statically linked binaries compiled using ALPack, for portability and ease of distribution.**
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Linux-FCC624?&logo=linux&style=flat-square"/>
+  <img src="https://img.shields.io/badge/Arch-x86__64-00599c?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Binary-Stripped-blueviolet?style=flat-square&logo=files&logoColor=white"/>
+  <img src="https://img.shields.io/github/license/LinuxProativo/StaticHub?color=673ab7&label=License&style=flat-square&logo=opensourcehardware&logoColor=white"/>
+</p>
 
-## 📝 Description
+## 🔍 Overview
+
+This repository contains statically linked binaries compiled using **ALPack**, for portability and ease of distribution.
+
 - ⚙️ **All binaries are built to be static or self-contained with no external shared library dependencies.**
 - ⚙️ **Intended for use in minimal, embedded, containerized environments or as a portable tool.**
 - ⚙️ **Each release includes verified static binaries for supported platforms.**
@@ -141,7 +178,7 @@ fi
 # Processar binários individuais
 # ======================================================
 for binfile in *; do
-    grep -qEo "ELF.*static.*linked" <(file "$binfile") || continue
+    grep -qEo "ELF.*static.*linked" <(file "$binfile") 2>/dev/null || continue
     [ -f "$binfile" ] || continue
     [[ "$binfile" == *.sha256 || "$binfile" == *.txt || "$binfile" == "_release_git" || "$binfile" == "$README" ]] && continue
 
@@ -160,5 +197,9 @@ for binfile in *; do
     fi
 done
 
-echo -e '\n## 📜 License\n\nThis project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.\n' >> "$README"
+# ======================================================
+# Rodapé do README
+# ======================================================
+echo -e '\n## 📜 MIT License\n\nThis repository has scripts created to be free software.  \nTherefore, they can be distributed and/or modified within the terms of the ***MIT License***.\n\n> ### See the [MIT License](LICENSE) file for details.\n\n## 📬 Contact & Support\n\n* 📧 **Email:** [m10ferrari1200@gmail.com](mailto:m10ferrari1200@gmail.com)\n* 📧 **Email:** [contatolinuxdicaspro@gmail.com](mailto:contatolinuxdicaspro@gmail.com)' >> "$README"
+
 echo -e "\n✅ Releases e checksums atualizados com sucesso!"
